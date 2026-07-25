@@ -35,3 +35,5 @@ FM 레코드 규칙 생성
 python agent.py propose --doc docs/VendorC_API_Guide_v1.0.md --vendor VENDOR_C --record_type FM --out rules
 
 
+# 해야할일
+매핑 규칙에 icd 버전 표기 안되어있음. icd 버전 변경을 고려하는 코드를 추가 해야함.
