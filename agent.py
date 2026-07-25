@@ -16,7 +16,7 @@ def call_llm_api(prompt: str) -> str:
 
     response = client.messages.create(
         model="claude-sonnet-5",
-        max_tokens=8192,
+        max_tokens=4096,
         system="You are a data mapping agent. You must output strictly valid JSON only. Do not wrap the JSON in markdown blocks and do not include any other text.",
         messages=[{"role": "user", "content": prompt}]
     )
@@ -42,9 +42,11 @@ def clean_json_output(text: str) -> str:
 
 
 def get_json_template(record_type, vendor):
+    # 빈 객체를 기본으로 제공하여 플레이스홀더로 인한 Hallucination 방지
     if record_type == "CM":
         return f"""{{
   "vendor": "{vendor}",
+  "icd_version": "<extracted_icd_version>",
   "record_type": "CM",
   "metadata_mapping": {{
     "ne_id": "<vendor_source_field>",
@@ -55,17 +57,13 @@ def get_json_template(record_type, vendor):
     "timestamp_field": "<vendor_source_field>",
     "raw_format": "<time_format_string>"
   }},
-  "value_multiplier": {{
-    "<vendor_source_field_requiring_multiplication>": 100
-  }},
-  "parameter_mapping": {{
-    "<vendor_source_field_1>": "<standard_parameter_name_1>",
-    "<vendor_source_field_2>": "<standard_parameter_name_2>"
-  }}
+  "value_multiplier": {{}},
+  "parameter_mapping": {{}}
 }}"""
     elif record_type == "FM":
         return f"""{{
   "vendor": "{vendor}",
+  "icd_version": "<extracted_icd_version>",
   "record_type": "FM",
   "metadata_mapping": {{
     "ne_id": "<vendor_source_field>",
@@ -83,16 +81,13 @@ def get_json_template(record_type, vendor):
     "additional_text": "<vendor_source_field>"
   }},
   "enum_mapping": {{
-    "severity": {{
-      "<vendor_critical_code>": "CRITICAL",
-      "<vendor_major_code>": "MAJOR",
-      "<vendor_clear_code>": "CLEARED"
-    }}
+    "severity": {{}}
   }}
 }}"""
     elif record_type == "PM":
         return f"""{{
   "vendor": "{vendor}",
+  "icd_version": "<extracted_icd_version>",
   "record_type": "PM",
   "metadata_mapping": {{
     "ne_id": "<vendor_source_field>",
@@ -104,18 +99,13 @@ def get_json_template(record_type, vendor):
     "interval_field": "<vendor_source_field>",
     "interval_unit": "<unit_string>"
   }},
-  "value_multiplier": {{
-    "<vendor_source_field_requiring_multiplication>": 100
-  }},
-  "counter_mapping": {{
-    "<vendor_source_field_1>": "<standard_counter_name_1>",
-    "<vendor_source_field_2>": "<standard_counter_name_2>"
-  }}
+  "value_multiplier": {{}},
+  "counter_mapping": {{}}
 }}"""
 
 
-def propose(doc_file, vendor, record_type, rules_out):
-    print(f"[{vendor} - {record_type}] ICD 문서 분석 시작: {doc_file}")
+def propose(doc_file, vendor, rules_dir, out_dir, sample_dir=None):
+    print(f"[{vendor}] ICD 문서 분석 시작: {doc_file}")
 
     if not os.path.exists(doc_file):
         print(f"작업 중단: 입력 문서 파일이 존재하지 않습니다. ({doc_file})")
@@ -140,58 +130,95 @@ def propose(doc_file, vendor, record_type, rules_out):
     with open(schema_path, "r", encoding="utf-8") as f:
         schema_content = f.read()
 
-    json_template = get_json_template(record_type, vendor)
     doc_filename = os.path.basename(doc_file)
+    os.makedirs(out_dir, exist_ok=True)
 
-    prompt = f"""
-    [Standard Dictionary Reference]
-    {dict_content}
+    for record_type in ["CM", "PM", "FM"]:
+        print(f"[{vendor} - {record_type}] 규칙 생성 진행 중...")
+        json_template = get_json_template(record_type, vendor)
 
-    [Standard Schema Constraints]
-    {schema_content}
+        rule_file_name = f"{vendor.lower()}_{record_type.lower()}_rules.json"
+        existing_path = os.path.join(rules_dir, rule_file_name)
+        out_path = os.path.join(out_dir, rule_file_name)
 
-    [Vendor ICD Document Name]
-    {doc_filename}
+        existing_rule_content = ""
+        if os.path.exists(existing_path):
+            with open(existing_path, "r", encoding="utf-8") as f:
+                existing_rule_content = f.read()
 
-    [Vendor ICD Document Content]
-    {doc_content}
+        # 원본 샘플 대조 기능을 위한 데이터 추출 로직
+        sample_context = ""
+        if sample_dir and os.path.exists(sample_dir):
+            vendor_prefix = vendor.replace("VENDOR_", "")
+            matched_sample_files = [
+                f for f in os.listdir(sample_dir)
+                if f.startswith(f"{vendor_prefix}_") and f"_{record_type}_" in f
+            ]
+            if matched_sample_files:
+                sample_file_path = os.path.join(sample_dir, matched_sample_files[0])
+                try:
+                    with open(sample_file_path, "r", encoding="utf-8") as sf:
+                        sample_text = sf.read(2048)
+                    sample_context = f"\n[Sample Raw Data (First 2048 chars)]\n{sample_text}\n"
+                    print(f"[{vendor} - {record_type}] 샘플 데이터 대조 성공: {matched_sample_files[0]}")
+                except Exception:
+                    pass
 
-    Task: 
-    1. Analyze the vendor ICD document.
-    2. Create a declarative mapping rule file for the '{record_type}' record type only.
-    3. Use the exact declarative JSON structure provided below.
-    4. Map ALL relevant fields found in the vendor document to standard fields. Do not limit to the number of keys shown in the template.
-    5. In 'parameter_mapping', 'counter_mapping', or 'alarm_mapping', the values MUST strictly match the standard names from the Standard Dictionary.
-    6. Output strictly valid JSON. No markdown wrappers or explanations outside JSON.
+        prompt = f"""
+        [Standard Dictionary Reference]
+        {dict_content}
 
-    Required JSON Structure:
-    {json_template}
-    """
+        [Standard Schema Constraints]
+        {schema_content}
 
-    response_text = call_llm_api(prompt)
-    cleaned_text = clean_json_output(response_text)
+        [Vendor ICD Document Name]
+        {doc_filename}
 
-    try:
-        actual_llm_response = json.loads(cleaned_text)
-    except json.JSONDecodeError as e:
-        print(f"JSON 파싱 에러 발생: {e}")
-        print(f"원본 출력: {cleaned_text}")
-        return
+        [Vendor ICD Document Content]
+        {doc_content}
+        """
 
-    os.makedirs(rules_out, exist_ok=True)
-    rule_file_name = f"{vendor.lower()}_{record_type.lower()}_rules.json"
-    out_path = os.path.join(rules_out, rule_file_name)
+        if sample_context:
+            prompt += sample_context
 
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(actual_llm_response, f, indent=2, ensure_ascii=False)
+        if existing_rule_content:
+            prompt += f"""
+        [Existing Mapping Rules (Previous Version)]
+        {existing_rule_content}
+        """
 
-    print(f"매핑 규칙 JSON 저장 완료: {out_path}")
+        prompt += f"""
+        Task: 
+        1. Analyze the vendor ICD document and the provided Sample Raw Data (if any). The sample data reveals the actual field keys to map from.
+        2. Extract the ICD document version (e.g., "1.0", "1.1", "v1.2") from the document text and populate the 'icd_version' field.
+        3. Create a declarative mapping rule file for the '{record_type}' record type only.
+        4. If [Existing Mapping Rules] are provided, update them. You MUST preserve existing valid mappings to ensure backward compatibility and prevent regression for older data formats. Merge new fields gracefully.
+        5. Use the exact declarative JSON structure provided below.
+        6. Map ALL relevant fields found in the vendor document to standard fields.
+        7. In 'parameter_mapping', 'counter_mapping', or 'alarm_mapping', the values MUST strictly match the standard names from the Standard Dictionary.
+        8. Replace ALL placeholder strings (like `<vendor_source_field>`) with actual field names. If a section like 'value_multiplier' is not needed, output an empty object `{{}}`.
+        9. Output strictly valid JSON. No markdown wrappers or explanations outside JSON.
+
+        Required JSON Structure:
+        {json_template}
+        """
+
+        response_text = call_llm_api(prompt)
+        cleaned_text = clean_json_output(response_text)
+
+        try:
+            actual_llm_response = json.loads(cleaned_text)
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(actual_llm_response, f, indent=2, ensure_ascii=False)
+            print(f"[{vendor} - {record_type}] 매핑 규칙 JSON 저장 완료: {out_path}")
+        except json.JSONDecodeError as e:
+            print(f"[{vendor} - {record_type}] JSON 파싱 에러 발생: {e}")
+            print(f"원본 출력: {cleaned_text}")
 
 
 def validate(rules_dir, input_dir):
     print(f"규칙 자체 검증 시작 - 규칙 경로: {rules_dir}, 입력 경로: {input_dir}")
 
-    # 입력 디렉터리 경로 무결성 검증 추가
     if not os.path.exists(input_dir):
         print(f"검증 실패: 입력 데이터 디렉터리가 존재하지 않거나 경로가 잘못되었습니다. ({input_dir})")
         sys.exit(1)
@@ -212,7 +239,6 @@ def validate(rules_dir, input_dir):
             if match:
                 valid_target_fields.add(match.group(1))
 
-    # FM 전용 표준 필드명 및 기타 예약어 추가
     fm_standard_fields = {"alarm_id", "severity", "probable_cause", "managed_object", "additional_text"}
     valid_target_fields.update(fm_standard_fields)
 
@@ -235,10 +261,13 @@ def validate(rules_dir, input_dir):
                 print(f"[검증 실패] {rule_file}: 'record_type' 키 누락 또는 잘못된 값 ({record_type})")
                 continue
 
+            icd_version = rules.get("icd_version", "")
+            if not icd_version or icd_version == "<extracted_icd_version>":
+                print(f"[검증 경고] {rule_file}: 'icd_version' 정보가 누락되었거나 올바르게 추출되지 않았습니다.")
+
             validation_failed = False
             mappings_to_check = {}
 
-            # 레코드 타입별 타겟 매핑 블록 설정
             if record_type == "PM" and "counter_mapping" in rules:
                 mappings_to_check = rules["counter_mapping"]
             elif record_type == "CM" and "parameter_mapping" in rules:
@@ -252,12 +281,10 @@ def validate(rules_dir, input_dir):
             if validation_failed:
                 continue
 
-            # JSON 객체 타입 검증 추가 (AttributeError 차단)
             if not isinstance(mappings_to_check, dict):
                 print(f"[검증 실패] {rule_file}: 매핑 데이터 구조가 올바른 JSON 객체(Dictionary) 형식이 아닙니다.")
                 continue
 
-            # 타겟 필드가 표준 사전에 존재하는지 검증
             for source, target in mappings_to_check.items():
                 if valid_target_fields and target not in valid_target_fields:
                     print(f"[검증 실패] {rule_file}: '{target}' 필드는 비표준 타겟 필드입니다.")
@@ -266,7 +293,9 @@ def validate(rules_dir, input_dir):
             if validation_failed:
                 continue
 
-            matched_files = [f for f in os.listdir(input_dir) if f.startswith(vendor_name)]
+            # 입력 데이터와 룰 파일이 매칭되는지 확인하기 위한 Prefix 필터링 로직 (버그 수정)
+            vendor_prefix = vendor_name.replace("VENDOR_", "")
+            matched_files = [f for f in os.listdir(input_dir) if f.startswith(f"{vendor_prefix}_")]
 
             print(f"[검증 통과] {rule_file} ({record_type}) - 선언적 논리 구조 정상. 입력 데이터 매칭 {len(matched_files)}건 확인.")
 
@@ -281,8 +310,9 @@ if __name__ == '__main__':
     propose_parser = subparsers.add_parser('propose')
     propose_parser.add_argument('--doc', required=True)
     propose_parser.add_argument('--vendor', required=True)
-    propose_parser.add_argument('--record_type', choices=['CM', 'PM', 'FM'], required=True)
+    propose_parser.add_argument('--rules', required=True)
     propose_parser.add_argument('--out', required=True)
+    propose_parser.add_argument('--sample', required=False)
 
     validate_parser = subparsers.add_parser('validate')
     validate_parser.add_argument('--rules', required=True)
@@ -291,6 +321,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.command == 'propose':
-        propose(args.doc, args.vendor, args.record_type, args.out)
+        propose(args.doc, args.vendor, args.rules, args.out, getattr(args, 'sample', None))
     elif args.command == 'validate':
         validate(args.rules, args.input)

@@ -1,0 +1,33 @@
+{
+  "vendor": "VENDOR_C",
+  "icd_version": "1.0",
+  "record_type": "PM",
+  "metadata_mapping": {
+    "ne_id": "ne",
+    "ne_type": "kind"
+  },
+  "time_mapping": {
+    "timestamp_field": "ts",
+    "raw_format": "epoch_ms",
+    "interval_field": "gran",
+    "interval_unit": "sec"
+  },
+  "value_multiplier": {},
+  "counter_mapping": {
+    "reg_try_cnt": "sip.register.attempt",
+    "reg_ok_cnt": "sip.register.success",
+    "reg_ng_cnt": "sip.register.fail",
+    "inv_try_cnt": "sip.invite.attempt",
+    "inv_ok_cnt": "sip.invite.success",
+    "inv_ng_cnt": "sip.invite.fail",
+    "rsp_4xx_cnt": "sip.response.4xx",
+    "rsp_5xx_cnt": "sip.response.5xx",
+    "rsp_6xx_cnt": "sip.response.6xx",
+    "sess_act": "session.active.count",
+    "setup_ms": "session.setup.time_ms",
+    "cpu_pct": "resource.cpu.usage",
+    "mem_pct": "resource.memory.usage",
+    "msg_in": "traffic.msg.rx",
+    "msg_out": "traffic.msg.tx"
+  }
+}

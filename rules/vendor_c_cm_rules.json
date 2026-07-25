@@ -1,5 +1,6 @@
 {
   "vendor": "VENDOR_C",
+  "icd_version": "1.0",
   "record_type": "CM",
   "metadata_mapping": {
     "ne_id": "ne",

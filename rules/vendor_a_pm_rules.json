@@ -1,0 +1,33 @@
+{
+  "vendor": "VENDOR_A",
+  "icd_version": "1.0",
+  "record_type": "PM",
+  "metadata_mapping": {
+    "ne_id": "NEName",
+    "ne_type": "NeType"
+  },
+  "time_mapping": {
+    "timestamp_field": "CollectTime",
+    "raw_format": "yyyyMMddHHmmss",
+    "interval_field": "Interval",
+    "interval_unit": "minute"
+  },
+  "value_multiplier": {},
+  "counter_mapping": {
+    "RegAtt": "sip.register.attempt",
+    "RegSucc": "sip.register.success",
+    "RegFail": "sip.register.fail",
+    "InvAtt": "sip.invite.attempt",
+    "InvSucc": "sip.invite.success",
+    "InvFail": "sip.invite.fail",
+    "Rsp4xx": "sip.response.4xx",
+    "Rsp5xx": "sip.response.5xx",
+    "Rsp6xx": "sip.response.6xx",
+    "ActSess": "session.active.count",
+    "SetupTime": "session.setup.time_ms",
+    "CpuLoad": "resource.cpu.usage",
+    "MemLoad": "resource.memory.usage",
+    "MsgRx": "traffic.msg.rx",
+    "MsgTx": "traffic.msg.tx"
+  }
+}
