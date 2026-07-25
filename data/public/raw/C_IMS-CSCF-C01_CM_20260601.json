@@ -1,0 +1,20 @@
+[
+  {
+    "ne": "IMS-CSCF-C01",
+    "kind": "S_CSCF",
+    "ts": 1780250400000,
+    "snap_id": "IMS-CSCF-C01-20260601-01",
+    "cfg": {
+      "t1_ms": 600,
+      "t2_ms": 4000,
+      "invite_timeout_ms": 26000,
+      "reg_expire_sec": 3600,
+      "max_sess": 180000,
+      "sess_expire_sec": 1800,
+      "cpu_ovld_pct": 80.0,
+      "sip_port": 5060,
+      "hb_ms": 1000,
+      "dscp": 46
+    }
+  }
+]

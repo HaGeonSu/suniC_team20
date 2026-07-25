@@ -1,0 +1,26 @@
+{
+  "vendor": "VENDOR_C",
+  "record_type": "CM",
+  "metadata_mapping": {
+    "ne_id": "ne",
+    "ne_type": "kind",
+    "snapshot_id": "snap_id"
+  },
+  "time_mapping": {
+    "timestamp_field": "ts",
+    "raw_format": "epoch_ms"
+  },
+  "value_multiplier": {},
+  "parameter_mapping": {
+    "cfg.t1_ms": "sip.timer.t1_ms",
+    "cfg.t2_ms": "sip.timer.t2_ms",
+    "cfg.invite_timeout_ms": "sip.timer.invite_timeout_ms",
+    "cfg.reg_expire_sec": "registration.expire_sec",
+    "cfg.max_sess": "session.max_count",
+    "cfg.sess_expire_sec": "session.expire_sec",
+    "cfg.cpu_ovld_pct": "overload.cpu_threshold",
+    "cfg.sip_port": "transport.sip.port",
+    "cfg.hb_ms": "ha.heartbeat_interval_ms",
+    "cfg.dscp": "qos.dscp.value"
+  }
+}

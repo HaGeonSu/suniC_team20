@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alarmList vendorName="VENDOR_B">
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Warning" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T20:09:26Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1001" perceivedSeverity="Warning" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=2" eventTime="2026-06-03T20:14:04Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1007" perceivedSeverity="Warning" probableCause="DATABASE_UNAVAILABLE" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=4" eventTime="2026-06-03T20:18:21Z">
+    <additionalText>Subscriber database query failure</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Warning" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T20:19:33Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1001" perceivedSeverity="Warning" probableCause="LINK_FAILURE" eventTime="2026-06-03T20:23:02Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1006" perceivedSeverity="Warning" probableCause="LICENSE_EXPIRY" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=3" eventTime="2026-06-03T23:02:05Z">
+    <additionalText>License capacity limit reached</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1008" perceivedSeverity="Major" probableCause="CONFIG_MISMATCH" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T23:07:21Z">
+    <additionalText>Configuration mismatch between mated nodes</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1006" perceivedSeverity="Minor" probableCause="LICENSE_EXPIRY" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=3" eventTime="2026-06-04T10:43:16Z">
+    <additionalText>License capacity limit reached</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1008" perceivedSeverity="Minor" probableCause="CONFIG_MISMATCH" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-04T10:50:02Z">
+    <additionalText>Configuration mismatch between mated nodes</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1008" perceivedSeverity="Warning" probableCause="CONFIG_MISMATCH" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-04T11:36:09Z">
+    <additionalText>Configuration mismatch between mated nodes</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Major" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-04T11:39:50Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1003" perceivedSeverity="Warning" probableCause="MEMORY_EXHAUSTION" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=4" eventTime="2026-06-04T11:39:57Z">
+    <additionalText>Session table memory usage critical</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1002" perceivedSeverity="Minor" probableCause="CPU_OVERLOAD" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=3" eventTime="2026-06-04T11:44:14Z">
+    <additionalText>CPU utilization exceeded configured threshold</additionalText>
+  </alarm>
+</alarmList>

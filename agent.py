@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import json
 import re
 import anthropic
@@ -10,35 +11,27 @@ load_dotenv()
 
 
 def call_llm_api(prompt: str) -> str:
-    # 환경 변수에서 ANTHROPIC_API_KEY 인식
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     client = anthropic.Anthropic(api_key=api_key)
 
-    # claude-3-5-sonnet-20240620 모델 적용 및 max_tokens 4096 설정
     response = client.messages.create(
         model="claude-sonnet-5",
         max_tokens=8192,
         system="You are a data mapping agent. You must output strictly valid JSON only. Do not wrap the JSON in markdown blocks and do not include any other text.",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=[{"role": "user", "content": prompt}]
     )
 
-    # 응답 블록 중 텍스트 블록만 추출하여 반환
     for block in response.content:
         if getattr(block, "type", "") == "text":
             return block.text
 
-    return ""  # 텍스트 블록이 없을 경우 빈 문자열 반환
+    return ""
 
 
 def clean_json_output(text: str) -> str:
-    """LLM 텍스트에서 순수 JSON 객체 블록만 강제 추출"""
-    # 마크다운 기호 1차 제거
     cleaned = re.sub(r'^```json\s*', '', text, flags=re.MULTILINE)
     cleaned = re.sub(r'^```\s*$', '', cleaned, flags=re.MULTILINE)
 
-    # 첫 번째 '{' 와 마지막 '}' 사이의 문자열만 추출
     start_idx = cleaned.find('{')
     end_idx = cleaned.rfind('}')
 
@@ -48,72 +41,136 @@ def clean_json_output(text: str) -> str:
     return cleaned.strip()
 
 
-def propose(doc_file, vendor, rules_in, rules_out, sample_dir):
-    print(f"[{vendor}] ICD 문서 분석 시작: {doc_file}")
+def get_json_template(record_type, vendor):
+    if record_type == "CM":
+        return f"""{{
+  "vendor": "{vendor}",
+  "record_type": "CM",
+  "metadata_mapping": {{
+    "ne_id": "<vendor_source_field>",
+    "ne_type": "<vendor_source_field>",
+    "snapshot_id": "<vendor_source_field>"
+  }},
+  "time_mapping": {{
+    "timestamp_field": "<vendor_source_field>",
+    "raw_format": "<time_format_string>"
+  }},
+  "value_multiplier": {{
+    "<vendor_source_field_requiring_multiplication>": 100
+  }},
+  "parameter_mapping": {{
+    "<vendor_source_field_1>": "<standard_parameter_name_1>",
+    "<vendor_source_field_2>": "<standard_parameter_name_2>"
+  }}
+}}"""
+    elif record_type == "FM":
+        return f"""{{
+  "vendor": "{vendor}",
+  "record_type": "FM",
+  "metadata_mapping": {{
+    "ne_id": "<vendor_source_field>",
+    "ne_type": "<vendor_source_field>"
+  }},
+  "time_mapping": {{
+    "timestamp_field": "<vendor_source_field>",
+    "raw_format": "<time_format_string>"
+  }},
+  "alarm_mapping": {{
+    "alarm_id": "<vendor_source_field>",
+    "severity": "<vendor_source_field>",
+    "probable_cause": "<vendor_source_field>",
+    "managed_object": "<vendor_source_field>",
+    "additional_text": "<vendor_source_field>"
+  }},
+  "enum_mapping": {{
+    "severity": {{
+      "<vendor_critical_code>": "CRITICAL",
+      "<vendor_major_code>": "MAJOR",
+      "<vendor_clear_code>": "CLEARED"
+    }}
+  }}
+}}"""
+    elif record_type == "PM":
+        return f"""{{
+  "vendor": "{vendor}",
+  "record_type": "PM",
+  "metadata_mapping": {{
+    "ne_id": "<vendor_source_field>",
+    "ne_type": "<vendor_source_field>"
+  }},
+  "time_mapping": {{
+    "timestamp_field": "<vendor_source_field>",
+    "raw_format": "<time_format_string>",
+    "interval_field": "<vendor_source_field>",
+    "interval_unit": "<unit_string>"
+  }},
+  "value_multiplier": {{
+    "<vendor_source_field_requiring_multiplication>": 100
+  }},
+  "counter_mapping": {{
+    "<vendor_source_field_1>": "<standard_counter_name_1>",
+    "<vendor_source_field_2>": "<standard_counter_name_2>"
+  }}
+}}"""
 
-    # 1. 벤더 ICD 문서 로드
+
+def propose(doc_file, vendor, record_type, rules_out):
+    print(f"[{vendor} - {record_type}] ICD 문서 분석 시작: {doc_file}")
+
+    if not os.path.exists(doc_file):
+        print(f"작업 중단: 입력 문서 파일이 존재하지 않습니다. ({doc_file})")
+        sys.exit(1)
+
     with open(doc_file, "r", encoding="utf-8") as f:
         doc_content = f.read()
 
-    # 2. 표준 카운터 사전 로드 (정확한 표준 매핑 기준)
     dict_path = os.path.join("schema", "counter_dictionary.md")
-    dict_content = ""
-    if os.path.exists(dict_path):
-        with open(dict_path, "r", encoding="utf-8") as f:
-            dict_content = f.read()
+    if not os.path.exists(dict_path):
+        print(f"작업 중단: 필수 사전 파일이 존재하지 않습니다. ({dict_path})")
+        sys.exit(1)
 
-    # 3. 기존 규칙 병합용 로드 (v1.1 갱신 목적)
-    existing_rules = {}
-    rule_file_name = f"{vendor.lower()}_rules.json"
-    rule_file_path = os.path.join(rules_in, rule_file_name) if rules_in else ""
-    if rule_file_path and os.path.exists(rule_file_path):
-        with open(rule_file_path, "r", encoding="utf-8") as f:
-            existing_rules = json.load(f)
-            print(f"기존 규칙 로드 완료: {rule_file_path}")
+    with open(dict_path, "r", encoding="utf-8") as f:
+        dict_content = f.read()
 
-    # 4. 프롬프트 및 JSON 스키마 강제 구성
+    schema_path = os.path.join("schema", "unified_v1.schema.json")
+    if not os.path.exists(schema_path):
+        print(f"작업 중단: 필수 스키마 파일이 존재하지 않습니다. ({schema_path})")
+        sys.exit(1)
+
+    with open(schema_path, "r", encoding="utf-8") as f:
+        schema_content = f.read()
+
+    json_template = get_json_template(record_type, vendor)
+    doc_filename = os.path.basename(doc_file)
+
     prompt = f"""
     [Standard Dictionary Reference]
     {dict_content}
 
-    [Existing Rules (if any)]
-    {json.dumps(existing_rules, indent=2)}
+    [Standard Schema Constraints]
+    {schema_content}
 
-    [Vendor ICD Document to Analyze/Update]
+    [Vendor ICD Document Name]
+    {doc_filename}
+
+    [Vendor ICD Document Content]
     {doc_content}
 
     Task: 
-    1. Analyze the vendor ICD document based on the standard dictionary.
-    2. Create or update the field mapping rules.
-    3. Output MUST BE strictly valid JSON format matching the exact structure below.
-    4. Do not include markdown formatting or explanations outside the JSON.
+    1. Analyze the vendor ICD document.
+    2. Create a declarative mapping rule file for the '{record_type}' record type only.
+    3. Use the exact declarative JSON structure provided below.
+    4. Map ALL relevant fields found in the vendor document to standard fields. Do not limit to the number of keys shown in the template.
+    5. In 'parameter_mapping', 'counter_mapping', or 'alarm_mapping', the values MUST strictly match the standard names from the Standard Dictionary.
+    6. Output strictly valid JSON. No markdown wrappers or explanations outside JSON.
 
     Required JSON Structure:
-    {{
-      "vendor": "{vendor}",
-      "version": "1.1",
-      "field_mappings": [
-        {{
-          "source_path": "Original field name or path in vendor data",
-          "target_field": "Standard field name from dictionary",
-          "transform": "Transformation type (e.g., 'string', 'multiply_100', 'iso8601_to_kst')",
-          "reason": "Detailed logical reason for mapping and transform"
-        }}
-      ],
-      "unmapped_fields": [
-        {{
-          "source_path": "Field in vendor data not mapped",
-          "reason": "Why it is not mapped (e.g., 'No corresponding field found in unified_v1 schema')"
-        }}
-      ]
-    }}
+    {json_template}
     """
 
-    # 5. LLM API 실제 호출 및 마크다운 정제
     response_text = call_llm_api(prompt)
     cleaned_text = clean_json_output(response_text)
 
-    # 6. JSON 파싱 검증 및 저장
     try:
         actual_llm_response = json.loads(cleaned_text)
     except json.JSONDecodeError as e:
@@ -122,7 +179,9 @@ def propose(doc_file, vendor, rules_in, rules_out, sample_dir):
         return
 
     os.makedirs(rules_out, exist_ok=True)
+    rule_file_name = f"{vendor.lower()}_{record_type.lower()}_rules.json"
     out_path = os.path.join(rules_out, rule_file_name)
+
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(actual_llm_response, f, indent=2, ensure_ascii=False)
 
@@ -132,11 +191,31 @@ def propose(doc_file, vendor, rules_in, rules_out, sample_dir):
 def validate(rules_dir, input_dir):
     print(f"규칙 자체 검증 시작 - 규칙 경로: {rules_dir}, 입력 경로: {input_dir}")
 
-    if not os.path.exists(rules_dir) or not os.listdir(rules_dir):
-        print("검증 실패: rules 디렉터리가 비어 있거나 존재하지 않습니다.")
-        return
+    # 입력 디렉터리 경로 무결성 검증 추가
+    if not os.path.exists(input_dir):
+        print(f"검증 실패: 입력 데이터 디렉터리가 존재하지 않거나 경로가 잘못되었습니다. ({input_dir})")
+        sys.exit(1)
 
-    # 생성된 모든 규칙 파일 검증
+    if not os.path.exists(rules_dir) or not os.listdir(rules_dir):
+        print(f"검증 실패: rules 디렉터리가 비어 있거나 존재하지 않습니다. ({rules_dir})")
+        sys.exit(1)
+
+    dict_path = os.path.join("schema", "counter_dictionary.md")
+    if not os.path.exists(dict_path):
+        print(f"작업 중단: 필수 사전 파일이 존재하지 않습니다. ({dict_path})")
+        sys.exit(1)
+
+    valid_target_fields = set()
+    with open(dict_path, "r", encoding="utf-8") as f:
+        for line in f:
+            match = re.search(r'\|\s*`([a-z0-9_.]+)`\s*\|', line)
+            if match:
+                valid_target_fields.add(match.group(1))
+
+    # FM 전용 표준 필드명 및 기타 예약어 추가
+    fm_standard_fields = {"alarm_id", "severity", "probable_cause", "managed_object", "additional_text"}
+    valid_target_fields.update(fm_standard_fields)
+
     for rule_file in os.listdir(rules_dir):
         if not rule_file.endswith('.json'):
             continue
@@ -146,31 +225,64 @@ def validate(rules_dir, input_dir):
             with open(rule_path, "r", encoding="utf-8") as f:
                 rules = json.load(f)
 
-            # 필수 키 존재 여부 확인
-            if "field_mappings" not in rules or "unmapped_fields" not in rules:
-                print(f"[검증 실패] {rule_file}: 필수 키('field_mappings', 'unmapped_fields') 누락")
+            vendor_name = rules.get("vendor", "")
+            if not vendor_name:
+                print(f"[검증 실패] {rule_file}: 'vendor' 키가 누락되었거나 값이 비어 있습니다.")
                 continue
 
-            # 원본 데이터 연관성 단순 대조
-            vendor_prefix = rules.get("vendor", "")[0] if rules.get("vendor") else ""
-            matched_files = [f for f in os.listdir(input_dir) if f.startswith(vendor_prefix)]
+            record_type = rules.get("record_type")
+            if record_type not in ["PM", "CM", "FM"]:
+                print(f"[검증 실패] {rule_file}: 'record_type' 키 누락 또는 잘못된 값 ({record_type})")
+                continue
 
-            print(f"[검증 통과] {rule_file} - 논리 구조 정상. 입력 데이터 매칭 {len(matched_files)}건 확인.")
+            validation_failed = False
+            mappings_to_check = {}
+
+            # 레코드 타입별 타겟 매핑 블록 설정
+            if record_type == "PM" and "counter_mapping" in rules:
+                mappings_to_check = rules["counter_mapping"]
+            elif record_type == "CM" and "parameter_mapping" in rules:
+                mappings_to_check = rules["parameter_mapping"]
+            elif record_type == "FM" and "alarm_mapping" in rules:
+                mappings_to_check = rules["alarm_mapping"]
+            else:
+                print(f"[검증 실패] {rule_file}: {record_type}에 대응하는 필수 매핑 딕셔너리가 누락되었습니다.")
+                validation_failed = True
+
+            if validation_failed:
+                continue
+
+            # JSON 객체 타입 검증 추가 (AttributeError 차단)
+            if not isinstance(mappings_to_check, dict):
+                print(f"[검증 실패] {rule_file}: 매핑 데이터 구조가 올바른 JSON 객체(Dictionary) 형식이 아닙니다.")
+                continue
+
+            # 타겟 필드가 표준 사전에 존재하는지 검증
+            for source, target in mappings_to_check.items():
+                if valid_target_fields and target not in valid_target_fields:
+                    print(f"[검증 실패] {rule_file}: '{target}' 필드는 비표준 타겟 필드입니다.")
+                    validation_failed = True
+
+            if validation_failed:
+                continue
+
+            matched_files = [f for f in os.listdir(input_dir) if f.startswith(vendor_name)]
+
+            print(f"[검증 통과] {rule_file} ({record_type}) - 선언적 논리 구조 정상. 입력 데이터 매칭 {len(matched_files)}건 확인.")
 
         except json.JSONDecodeError:
             print(f"[검증 실패] {rule_file}: 유효하지 않은 JSON 구조입니다.")
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="LLM Agent for Rule Generation")
+    parser = argparse.ArgumentParser(description="LLM Agent for Declarative Rule Generation")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     propose_parser = subparsers.add_parser('propose')
     propose_parser.add_argument('--doc', required=True)
     propose_parser.add_argument('--vendor', required=True)
-    propose_parser.add_argument('--rules', required=True)
+    propose_parser.add_argument('--record_type', choices=['CM', 'PM', 'FM'], required=True)
     propose_parser.add_argument('--out', required=True)
-    propose_parser.add_argument('--sample', required=False)
 
     validate_parser = subparsers.add_parser('validate')
     validate_parser.add_argument('--rules', required=True)
@@ -179,6 +291,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.command == 'propose':
-        propose(args.doc, args.vendor, args.rules, args.out, args.sample)
+        propose(args.doc, args.vendor, args.record_type, args.out)
     elif args.command == 'validate':
         validate(args.rules, args.input)

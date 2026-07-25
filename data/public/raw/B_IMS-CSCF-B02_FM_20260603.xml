@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alarmList vendorName="VENDOR_B">
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1006" perceivedSeverity="Minor" probableCause="LICENSE_EXPIRY" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=3" eventTime="2026-06-02T18:38:28Z">
+    <additionalText>License capacity limit reached</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1008" perceivedSeverity="Major" probableCause="CONFIG_MISMATCH" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=1" eventTime="2026-06-02T18:44:42Z">
+    <additionalText>Configuration mismatch between mated nodes</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1004" perceivedSeverity="Warning" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=1" eventTime="2026-06-02T22:48:37Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1001" perceivedSeverity="Major" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=2" eventTime="2026-06-02T22:52:07Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1001" perceivedSeverity="Critical" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=2" eventTime="2026-06-03T08:03:05Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1004" perceivedSeverity="Major" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=1" eventTime="2026-06-03T08:05:39Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1007" perceivedSeverity="Warning" probableCause="DATABASE_UNAVAILABLE" eventTime="2026-06-03T09:01:58Z">
+    <additionalText>Subscriber database query failure</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1004" perceivedSeverity="Warning" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=1" eventTime="2026-06-03T09:08:25Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1003" perceivedSeverity="Major" probableCause="MEMORY_EXHAUSTION" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=4" eventTime="2026-06-03T11:36:43Z">
+    <additionalText>Session table memory usage critical</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1002" perceivedSeverity="Minor" probableCause="CPU_OVERLOAD" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=3" eventTime="2026-06-03T11:41:53Z">
+    <additionalText>CPU utilization exceeded configured threshold</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1007" perceivedSeverity="UNKNOWN" probableCause="DATABASE_UNAVAILABLE" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=4" eventTime="2026-06-03T13:48:23Z">
+    <additionalText>Subscriber database query failure</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1004" perceivedSeverity="Major" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=1" eventTime="2026-06-03T13:51:57Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B02" neType="I_CSCF" alarmId="ALM1001" perceivedSeverity="Warning" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B02,Subsystem=SIP,Board=2" eventTime="2026-06-03T13:54:15Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+</alarmList>

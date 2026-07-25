@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configData managedElement="IMS-CSCF-B01" neType="P_CSCF" snapshotId="IMS-CSCF-B01-20260608-01" collectTime="2026-06-07T18:00:00Z">
+  <param name="sipTimerT1" value="500" unit="ms"/>
+  <param name="sipTimerT2" value="4000" unit="ms"/>
+  <param name="sipInviteTimeout" value="26000" unit="ms"/>
+  <param name="regExpire" value="3600" unit="sec"/>
+  <param name="maxSessions" value="270000" unit="count"/>
+  <param name="sessionExpire" value="1800" unit="sec"/>
+  <param name="cpuOverloadThreshold" value="0.8" unit="ratio"/>
+  <param name="sipPort" value="5060" unit="port"/>
+  <param name="haHeartbeat" value="1000" unit="ms"/>
+  <param name="dscpValue" value="46" unit="codepoint"/>
+</configData>

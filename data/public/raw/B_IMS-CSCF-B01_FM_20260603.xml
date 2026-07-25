@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alarmList vendorName="VENDOR_B">
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Warning" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-02T19:52:10Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1001" perceivedSeverity="Warning" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=2" eventTime="2026-06-02T19:55:40Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1006" perceivedSeverity="Warning" probableCause="LICENSE_EXPIRY" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=3" eventTime="2026-06-03T01:45:32Z">
+    <additionalText>License capacity limit reached</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1008" perceivedSeverity="Minor" probableCause="CONFIG_MISMATCH" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T01:51:57Z">
+    <additionalText>Configuration mismatch between mated nodes</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1008" perceivedSeverity="Minor" probableCause="CONFIG_MISMATCH" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T05:57:02Z">
+    <additionalText>Configuration mismatch between mated nodes</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Major" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T06:01:36Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1001" perceivedSeverity="Minor" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=2" eventTime="2026-06-03T06:53:36Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Major" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T06:57:01Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1001" perceivedSeverity="Warning" probableCause="LINK_FAILURE" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=2" eventTime="2026-06-03T10:45:33Z">
+    <additionalText>Signalling link down on interface</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1004" perceivedSeverity="Minor" probableCause="SIP_TIMEOUT" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=1" eventTime="2026-06-03T10:46:50Z">
+    <additionalText>SIP transaction timeout towards peer node</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1005" perceivedSeverity="Critical" probableCause="REGISTRATION_STORM" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=2" eventTime="2026-06-03T11:30:00Z">
+    <additionalText>Fault scenario: Abnormal registration rate detected</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1005" perceivedSeverity="Cleared" probableCause="REGISTRATION_STORM" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=2" eventTime="2026-06-03T12:15:00Z">
+    <additionalText>Alarm cleared, service restored</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1003" perceivedSeverity="Warning" probableCause="MEMORY_EXHAUSTION" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=4" eventTime="2026-06-03T14:24:55Z">
+    <additionalText>Session table memory usage critical</additionalText>
+  </alarm>
+  <alarm managedElement="IMS-CSCF-B01" neType="P_CSCF" alarmId="ALM1002" perceivedSeverity="Major" probableCause="CPU_OVERLOAD" objectInstance="ManagedElement=IMS-CSCF-B01,Subsystem=SIP,Board=3" eventTime="2026-06-03T14:31:38Z">
+    <additionalText>CPU utilization exceeded configured threshold</additionalText>
+  </alarm>
+</alarmList>
