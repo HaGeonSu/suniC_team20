@@ -1,0 +1,53 @@
+{
+  "rule_schema_version": "1.0",
+  "rule_version": "1.0.0",
+  "source_document_version": "1.1",
+  "compatible_source_document_versions": [],
+  "vendor": "VENDOR_B",
+  "record_type": "PM",
+  "match": {
+    "required_fields": ["localDn", "neType", "endTime", "duration"],
+    "forbidden_fields": ["VS.CpuUtilRatio"],
+    "any_of": [["VS.CpuUsageRatio", "VS.InviteFailure5xx", "VS.RegisterSuccessRatio"]]
+  },
+  "required_source_fields": [
+    "localDn", "neType", "endTime", "duration",
+    "VS.RegisterAttempt", "VS.RegisterSuccess", "VS.RegisterFailure",
+    "VS.InviteAttempt", "VS.InviteSuccess", "VS.InviteFailure",
+    "VS.Response4xx", "VS.Response5xx", "VS.Response6xx",
+    "VS.ActiveSessions", "VS.SessionSetupTimeMean",
+    "VS.CpuUsageRatio", "VS.MemUtilRatio",
+    "VS.MessagesReceived", "VS.MessagesSent",
+    "VS.InviteFailure5xx", "VS.RegisterSuccessRatio"
+  ],
+  "time": {
+    "source": "endTime",
+    "target": "timestamp",
+    "format": "iso8601_utc",
+    "role": "interval_end",
+    "interval_source": "duration",
+    "interval_unit": "iso_duration"
+  },
+  "mappings": [
+    {"sources": [{"field": "localDn", "priority": 1}], "destination": "record", "target": "ne_id", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "neType", "priority": 1}], "destination": "record", "target": "ne_type", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.RegisterAttempt", "priority": 1}], "destination": "counters", "target": "sip.register.attempt", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.RegisterSuccess", "priority": 1}], "destination": "counters", "target": "sip.register.success", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.RegisterFailure", "priority": 1}], "destination": "counters", "target": "sip.register.fail", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.InviteAttempt", "priority": 1}], "destination": "counters", "target": "sip.invite.attempt", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.InviteSuccess", "priority": 1}], "destination": "counters", "target": "sip.invite.success", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.InviteFailure", "priority": 1}], "destination": "counters", "target": "sip.invite.fail", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.Response4xx", "priority": 1}], "destination": "counters", "target": "sip.response.4xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.Response5xx", "priority": 1}], "destination": "counters", "target": "sip.response.5xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.Response6xx", "priority": 1}], "destination": "counters", "target": "sip.response.6xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.ActiveSessions", "priority": 1}], "destination": "counters", "target": "session.active.count", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.SessionSetupTimeMean", "priority": 1}], "destination": "counters", "target": "session.setup.time_ms", "source_type": "number", "target_type": "number", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.CpuUsageRatio", "priority": 1}, {"field": "VS.CpuUtilRatio", "priority": 2}], "destination": "counters", "target": "resource.cpu.usage", "source_type": "number", "target_type": "number", "operations": [{"op": "scale", "factor": 100}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.MemUtilRatio", "priority": 1}], "destination": "counters", "target": "resource.memory.usage", "source_type": "number", "target_type": "number", "operations": [{"op": "scale", "factor": 100}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.MessagesReceived", "priority": 1}], "destination": "counters", "target": "traffic.msg.rx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.MessagesSent", "priority": 1}], "destination": "counters", "target": "traffic.msg.tx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.InviteFailure5xx", "priority": 1}], "destination": "counters", "target": "sip.invite.fail_5xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "VS.RegisterSuccessRatio", "priority": 1}], "destination": "counters", "target": "sip.register.success_rate", "source_type": "number", "target_type": "number", "operations": [{"op": "scale", "factor": 100}], "conflict_policy": "reject_if_different"}
+  ],
+  "unmapped": []
+}

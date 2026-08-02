@@ -1,0 +1,242 @@
+[
+  {
+    "rule_schema_version": "1.0",
+    "rule_version": "1.0.0",
+    "source_document_version": "1.0",
+    "compatible_source_document_versions": [],
+    "vendor": "VENDOR_C",
+    "record_type": "CM",
+    "match": {
+      "required_fields": [
+        "ne",
+        "kind",
+        "ts",
+        "snap_id"
+      ],
+      "forbidden_fields": [
+        "alm",
+        "gran"
+      ],
+      "any_of": []
+    },
+    "required_source_fields": [
+      "ne",
+      "kind",
+      "ts",
+      "snap_id",
+      "t1_ms",
+      "t2_ms",
+      "invite_timeout_ms",
+      "reg_expire_sec",
+      "max_sess",
+      "sess_expire_sec",
+      "cpu_ovld_pct",
+      "sip_port",
+      "hb_ms",
+      "dscp"
+    ],
+    "time": {
+      "source": "ts",
+      "target": "timestamp",
+      "format": "epoch_ms",
+      "role": "instant"
+    },
+    "mappings": [
+      {
+        "sources": [
+          {
+            "field": "ne",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "kind",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_type",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "snap_id",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "snapshot_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "t1_ms",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "sip.timer.t1_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "t2_ms",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "sip.timer.t2_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "invite_timeout_ms",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "sip.timer.invite_timeout_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "reg_expire_sec",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "registration.expire_sec",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "max_sess",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "session.max_count",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "sess_expire_sec",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "session.expire_sec",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "cpu_ovld_pct",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "overload.cpu_threshold",
+        "source_type": "number",
+        "target_type": "number",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "sip_port",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "transport.sip.port",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "hb_ms",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "ha.heartbeat_interval_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "dscp",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "qos.dscp.value",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      }
+    ],
+    "unmapped": []
+  }
+]

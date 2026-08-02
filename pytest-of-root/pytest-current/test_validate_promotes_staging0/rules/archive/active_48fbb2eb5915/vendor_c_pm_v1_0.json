@@ -1,0 +1,48 @@
+{
+  "rule_schema_version": "1.0",
+  "rule_version": "1.0.0",
+  "source_document_version": "1.0",
+  "compatible_source_document_versions": [],
+  "vendor": "VENDOR_C",
+  "record_type": "PM",
+  "match": {
+    "required_fields": ["ne", "kind", "ts", "gran"],
+    "forbidden_fields": ["alm", "snap_id"],
+    "any_of": []
+  },
+  "required_source_fields": [
+    "ne", "kind", "ts", "gran",
+    "reg_try_cnt", "reg_ok_cnt", "reg_ng_cnt",
+    "inv_try_cnt", "inv_ok_cnt", "inv_ng_cnt",
+    "rsp_4xx_cnt", "rsp_5xx_cnt", "rsp_6xx_cnt",
+    "sess_act", "setup_ms", "cpu_pct", "mem_pct", "msg_in", "msg_out"
+  ],
+  "time": {
+    "source": "ts",
+    "target": "timestamp",
+    "format": "epoch_ms",
+    "role": "interval_start",
+    "interval_source": "gran",
+    "interval_unit": "second"
+  },
+  "mappings": [
+    {"sources": [{"field": "ne", "priority": 1}], "destination": "record", "target": "ne_id", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "kind", "priority": 1}], "destination": "record", "target": "ne_type", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "reg_try_cnt", "priority": 1}], "destination": "counters", "target": "sip.register.attempt", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "reg_ok_cnt", "priority": 1}], "destination": "counters", "target": "sip.register.success", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "reg_ng_cnt", "priority": 1}], "destination": "counters", "target": "sip.register.fail", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "inv_try_cnt", "priority": 1}], "destination": "counters", "target": "sip.invite.attempt", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "inv_ok_cnt", "priority": 1}], "destination": "counters", "target": "sip.invite.success", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "inv_ng_cnt", "priority": 1}], "destination": "counters", "target": "sip.invite.fail", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "rsp_4xx_cnt", "priority": 1}], "destination": "counters", "target": "sip.response.4xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "rsp_5xx_cnt", "priority": 1}], "destination": "counters", "target": "sip.response.5xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "rsp_6xx_cnt", "priority": 1}], "destination": "counters", "target": "sip.response.6xx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "sess_act", "priority": 1}], "destination": "counters", "target": "session.active.count", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "setup_ms", "priority": 1}], "destination": "counters", "target": "session.setup.time_ms", "source_type": "number", "target_type": "number", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "cpu_pct", "priority": 1}], "destination": "counters", "target": "resource.cpu.usage", "source_type": "number", "target_type": "number", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "mem_pct", "priority": 1}], "destination": "counters", "target": "resource.memory.usage", "source_type": "number", "target_type": "number", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "msg_in", "priority": 1}], "destination": "counters", "target": "traffic.msg.rx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "msg_out", "priority": 1}], "destination": "counters", "target": "traffic.msg.tx", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"}
+  ],
+  "unmapped": []
+}

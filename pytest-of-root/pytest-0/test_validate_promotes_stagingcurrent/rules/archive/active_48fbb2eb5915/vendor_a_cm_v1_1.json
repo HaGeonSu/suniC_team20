@@ -1,0 +1,43 @@
+{
+  "rule_schema_version": "1.0",
+  "rule_version": "1.0.0",
+  "source_document_version": "1.1",
+  "compatible_source_document_versions": ["1.0"],
+  "vendor": "VENDOR_A",
+  "record_type": "CM",
+  "match": {
+    "required_fields": ["NEName", "NeType", "SnapshotId", "CollectTime"],
+    "forbidden_fields": [],
+    "any_of": []
+  },
+  "required_source_fields": [
+    "NEName", "NeType", "SnapshotId", "CollectTime",
+    "SIP.TimerT1", "SIP.TimerT2", "SIP.TimerB",
+    "REG.ExpireSec", "SESSION.MaxSession", "SESSION.ExpireSec",
+    "OVERLOAD.CpuThreshold", "TRANSPORT.SipPort",
+    "HA.HeartbeatMs", "QOS.Dscp"
+  ],
+  "time": {
+    "source": "CollectTime",
+    "target": "timestamp",
+    "format": "%Y%m%d%H%M%S",
+    "source_timezone": "Asia/Seoul",
+    "role": "instant"
+  },
+  "mappings": [
+    {"sources": [{"field": "NEName", "priority": 1}], "destination": "record", "target": "ne_id", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "NeType", "priority": 1}], "destination": "record", "target": "ne_type", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "SnapshotId", "priority": 1}], "destination": "record", "target": "snapshot_id", "source_type": "string", "target_type": "string", "operations": [{"op": "trim"}], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "SIP.TimerT1", "priority": 1}], "destination": "parameters", "target": "sip.timer.t1_ms", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "SIP.TimerT2", "priority": 1}], "destination": "parameters", "target": "sip.timer.t2_ms", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "SIP.TimerB", "priority": 1}], "destination": "parameters", "target": "sip.timer.invite_timeout_ms", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "REG.ExpireSec", "priority": 1}], "destination": "parameters", "target": "registration.expire_sec", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "SESSION.MaxSession", "priority": 1}], "destination": "parameters", "target": "session.max_count", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "SESSION.ExpireSec", "priority": 1}], "destination": "parameters", "target": "session.expire_sec", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "OVERLOAD.CpuThreshold", "priority": 1}], "destination": "parameters", "target": "overload.cpu_threshold", "source_type": "number", "target_type": "number", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "TRANSPORT.SipPort", "priority": 1}], "destination": "parameters", "target": "transport.sip.port", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "HA.HeartbeatMs", "priority": 1}], "destination": "parameters", "target": "ha.heartbeat_interval_ms", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"},
+    {"sources": [{"field": "QOS.Dscp", "priority": 1}], "destination": "parameters", "target": "qos.dscp.value", "source_type": "integer", "target_type": "integer", "operations": [], "conflict_policy": "reject_if_different"}
+  ],
+  "unmapped": []
+}

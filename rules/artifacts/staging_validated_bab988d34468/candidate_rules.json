@@ -1,0 +1,753 @@
+[
+  {
+    "rule_schema_version": "1.0",
+    "rule_version": "1.0.0",
+    "source_document_version": "1.1",
+    "compatible_source_document_versions": [
+      "1.0"
+    ],
+    "vendor": "VENDOR_A",
+    "record_type": "CM",
+    "match": {
+      "required_fields": [
+        "NEName",
+        "NeType",
+        "SnapshotId",
+        "CollectTime"
+      ],
+      "forbidden_fields": [],
+      "any_of": []
+    },
+    "required_source_fields": [
+      "NEName",
+      "NeType",
+      "SnapshotId",
+      "CollectTime",
+      "SIP.TimerT1",
+      "SIP.TimerT2",
+      "SIP.TimerB",
+      "REG.ExpireSec",
+      "SESSION.MaxSession",
+      "SESSION.ExpireSec",
+      "OVERLOAD.CpuThreshold",
+      "TRANSPORT.SipPort",
+      "HA.HeartbeatMs",
+      "QOS.Dscp"
+    ],
+    "time": {
+      "source": "CollectTime",
+      "target": "timestamp",
+      "format": "%Y%m%d%H%M%S",
+      "source_timezone": "Asia/Seoul",
+      "role": "instant"
+    },
+    "mappings": [
+      {
+        "sources": [
+          {
+            "field": "NEName",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "NeType",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_type",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SnapshotId",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "snapshot_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SIP.TimerT1",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "sip.timer.t1_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SIP.TimerT2",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "sip.timer.t2_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SIP.TimerB",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "sip.timer.invite_timeout_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "REG.ExpireSec",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "registration.expire_sec",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SESSION.MaxSession",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "session.max_count",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SESSION.ExpireSec",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "session.expire_sec",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "OVERLOAD.CpuThreshold",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "overload.cpu_threshold",
+        "source_type": "number",
+        "target_type": "number",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "TRANSPORT.SipPort",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "transport.sip.port",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "HA.HeartbeatMs",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "ha.heartbeat_interval_ms",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "QOS.Dscp",
+            "priority": 1
+          }
+        ],
+        "destination": "parameters",
+        "target": "qos.dscp.value",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      }
+    ],
+    "unmapped": []
+  },
+  {
+    "rule_schema_version": "1.0",
+    "rule_version": "1.1.0",
+    "source_document_version": "1.1",
+    "compatible_source_document_versions": [],
+    "vendor": "VENDOR_A",
+    "record_type": "PM",
+    "match": {
+      "required_fields": [
+        "NEName",
+        "NeType",
+        "CollectTime",
+        "Interval",
+        "CpuUsage",
+        "InvFail5xx",
+        "RegSuccRate"
+      ],
+      "forbidden_fields": [],
+      "any_of": []
+    },
+    "required_source_fields": [
+      "NEName",
+      "NeType",
+      "CollectTime",
+      "Interval",
+      "RegAtt",
+      "RegSucc",
+      "RegFail",
+      "InvAtt",
+      "InvSucc",
+      "InvFail",
+      "Rsp4xx",
+      "Rsp5xx",
+      "Rsp6xx",
+      "ActSess",
+      "SetupTime",
+      "CpuUsage",
+      "MemLoad",
+      "MsgRx",
+      "MsgTx",
+      "InvFail5xx",
+      "RegSuccRate"
+    ],
+    "time": {
+      "source": "CollectTime",
+      "target": "timestamp",
+      "format": "%Y%m%d%H%M%S",
+      "source_timezone": "Asia/Seoul",
+      "role": "interval_start",
+      "interval_source": "Interval",
+      "interval_unit": "minute"
+    },
+    "mappings": [
+      {
+        "sources": [
+          {
+            "field": "NEName",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "NeType",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_type",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "RegAtt",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.register.attempt",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "RegSucc",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.register.success",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "RegFail",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.register.fail",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "InvAtt",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.invite.attempt",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "InvSucc",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.invite.success",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "InvFail",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.invite.fail",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "Rsp4xx",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.response.4xx",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "Rsp5xx",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.response.5xx",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "Rsp6xx",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.response.6xx",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "ActSess",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "session.active.count",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SetupTime",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "session.setup.time_ms",
+        "source_type": "number",
+        "target_type": "number",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "CpuUsage",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "resource.cpu.usage",
+        "source_type": "number",
+        "target_type": "number",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "MemLoad",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "resource.memory.usage",
+        "source_type": "number",
+        "target_type": "number",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "MsgRx",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "traffic.msg.rx",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "MsgTx",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "traffic.msg.tx",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "InvFail5xx",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.invite.fail_5xx",
+        "source_type": "integer",
+        "target_type": "integer",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "RegSuccRate",
+            "priority": 1
+          }
+        ],
+        "destination": "counters",
+        "target": "sip.register.success_rate",
+        "source_type": "number",
+        "target_type": "number",
+        "operations": [],
+        "conflict_policy": "reject_if_different"
+      }
+    ],
+    "unmapped": []
+  },
+  {
+    "rule_schema_version": "1.0",
+    "rule_version": "1.0.0",
+    "source_document_version": "1.1",
+    "compatible_source_document_versions": [],
+    "vendor": "VENDOR_A",
+    "record_type": "FM",
+    "match": {
+      "required_fields": [
+        "NEName",
+        "ALM_ID"
+      ],
+      "forbidden_fields": [
+        "CLR"
+      ],
+      "any_of": []
+    },
+    "required_source_fields": [
+      "NEName",
+      "NETYPE",
+      "ALM_ID",
+      "SEV",
+      "PC",
+      "MO",
+      "ETIME"
+    ],
+    "time": {
+      "source": "ETIME",
+      "target": "timestamp",
+      "format": "%Y%m%d%H%M%S",
+      "source_timezone": "Asia/Seoul",
+      "role": "instant",
+      "event_time_source": "ETIME"
+    },
+    "mappings": [
+      {
+        "sources": [
+          {
+            "field": "NEName",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "NETYPE",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "ne_type",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "ALM_ID",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "alarm_id",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "SEV",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "severity",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "enum",
+            "values": {
+              "1": "CRITICAL",
+              "2": "MAJOR",
+              "3": "MINOR",
+              "4": "WARNING",
+              "5": "CLEARED"
+            }
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "PC",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "probable_cause",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "enum",
+            "values": {
+              "LINK_FAILURE": "LINK_FAILURE",
+              "CPU_OVERLOAD": "CPU_OVERLOAD",
+              "MEMORY_EXHAUSTION": "MEMORY_EXHAUSTION",
+              "LICENSE_EXPIRY": "LICENSE_EXPIRY",
+              "REGISTRATION_STORM": "REGISTRATION_STORM",
+              "SIP_TIMEOUT": "SIP_TIMEOUT",
+              "DATABASE_UNAVAILABLE": "DATABASE_UNAVAILABLE",
+              "CONFIG_MISMATCH": "CONFIG_MISMATCH"
+            }
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "MO",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "managed_object",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      },
+      {
+        "sources": [
+          {
+            "field": "TEXT",
+            "priority": 1
+          }
+        ],
+        "destination": "record",
+        "target": "additional_text",
+        "source_type": "string",
+        "target_type": "string",
+        "operations": [
+          {
+            "op": "trim"
+          }
+        ],
+        "conflict_policy": "reject_if_different"
+      }
+    ],
+    "unmapped": []
+  }
+]
